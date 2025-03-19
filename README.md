@@ -2,10 +2,10 @@
 
 <img src="logo.png" alt="Logo" width="300" align="right">
 
-[![GoDoc](https://pkg.go.dev/badge/maragu.dev/gomponents)](https://pkg.go.dev/maragu.dev/gomponents)
-[![Go](https://github.com/maragudk/gomponents/actions/workflows/ci.yml/badge.svg)](https://github.com/maragudk/gomponents/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/maragudk/gomponents/branch/main/graph/badge.svg)](https://codecov.io/gh/maragudk/gomponents)
-[![Go Report Card](https://goreportcard.com/badge/maragu.dev/gomponents)](https://goreportcard.com/report/maragu.dev/gomponents)
+[![GoDoc](https://pkg.go.dev/badge/go.alanpearce.eu/gomponents)](https://pkg.go.dev/go.alanpearce.eu/gomponents)
+[![Go](https://github.com/alanpearce/gomponents/actions/workflows/ci.yml/badge.svg)](https://github.com/alanpearce/gomponents/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/alanpearce/gomponents/branch/main/graph/badge.svg)](https://codecov.io/gh/alanpearce/gomponents)
+[![Go Report Card](https://goreportcard.com/badge/go.alanpearce.eu/gomponents)](https://goreportcard.com/report/go.alanpearce.eu/gomponents)
 
 Try HTML components in pure Go.
 
@@ -14,12 +14,15 @@ They render to HTML 5, and make it easy for you to build reusable components.
 So you can focus on building your app instead of learning yet another templating language.
 
 ```shell
-go get maragu.dev/gomponents
+go get go.alanpearce.eu/gomponents
 ```
 
-Made with ✨sparkles✨ by [maragu](https://www.maragu.dev/).
+Made with ✨sparkles✨ by [maragu](https://www.maragu.dev/), forked by [alanpearce](https://alanpearce.eu) to add helpers.
 
-Does your company depend on this project? [Contact me at markus@maragu.dk](mailto:markus@maragu.dk?Subject=Supporting%20your%20project) to discuss options for a one-time or recurring invoice to ensure its continued thriving.
+## Fork changes
+
+- `MapWithIndex` and `MapMap` for mapping over slices and maps respectively
+- `If` and `Iff` take an extra argument to render a fallback component when the condition is false
 
 ## Features
 
@@ -43,16 +46,16 @@ Check out [www.gomponents.com](https://www.gomponents.com) for an introduction.
 ## Usage
 
 ```shell
-go get maragu.dev/gomponents
+go get go.alanpearce.eu/gomponents
 ```
 
 ```go
 package main
 
 import (
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/components"
-	. "maragu.dev/gomponents/html"
+	. "go.alanpearce.eu/gomponents"
+	. "go.alanpearce.eu/gomponents/components"
+	. "go.alanpearce.eu/gomponents/html"
 )
 
 func Navbar(authenticated bool, currentPath string) Node {
@@ -120,27 +123,6 @@ First of all, thank you for wanting to contribute! 😊 See [CONTRIBUTING.md](CO
 I accept code contributions, especially with new HTML elements and attributes.
 I always welcome issues discussing interesting aspects of gomponents, and obviously bug reports and the like.
 But otherwise, I consider gomponents pretty much feature complete.
-
-New features to the core library are unlikely to be merged, since I like keeping it simple and the API small.
-In particular, new functions around collections (similar to `Map`) or flow control (`IfElse`/`Else`) will not be added.
-`Map` was introduced before generics where a thing, and I think it's better to start using generic functions
-from the stdlib or other libraries, instead of adding gomponents-specific variations of them to this library.
-
-If there's something missing that you need, I would recommend to keep small helper functions around in your own projects.
-And if all else fails, you can always use an [IIFE](https://developer.mozilla.org/en-US/docs/Glossary/IIFE):
-
-```go
-func list(ordered bool) Node {
-	return func() Node {
-		// Do whatever you need to do, imperatively
-		if ordered {
-			return Ol()
-		} else {
-			return Ul()
-		}
-	}()
-}
-```
 
 ### What's up with the specially named elements and attributes?
 

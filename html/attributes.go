@@ -1,7 +1,7 @@
 package html
 
 import (
-	g "maragu.dev/gomponents"
+	g "go.alanpearce.eu/gomponents"
 )
 
 func Async() g.Node {
@@ -138,7 +138,7 @@ func DataAttr(name, v string) g.Node {
 }
 
 func SlotAttr(v string) g.Node {
-  return g.Attr("slot", v)
+	return g.Attr("slot", v)
 }
 
 func For(v string) g.Node {

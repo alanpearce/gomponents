@@ -3,14 +3,15 @@ package html
 import (
 	"time"
 
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
+	. "go.alanpearce.eu/gomponents"
+	. "go.alanpearce.eu/gomponents/html"
 )
 
 func AboutPage() Node {
 	now := time.Now()
 
-	return page("About",
+	return page(
+		"About",
 		H1(Text("About")),
 
 		P(Textf("Built with gomponents and rendered at %v.", now.Format(time.TimeOnly))),
@@ -20,6 +21,10 @@ func AboutPage() Node {
 			If(now.Second()%2 != 0, Text("It's an odd second!")),
 		),
 
-		Img(Class("max-w-sm"), Src("https://www.gomponents.com/images/logo.png"), Alt("gomponents logo")),
+		Img(
+			Class("max-w-sm"),
+			Src("https://www.gomponents.com/images/logo.png"),
+			Alt("gomponents logo"),
+		),
 	)
 }

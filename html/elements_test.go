@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	g "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
-	"maragu.dev/gomponents/internal/assert"
+	g "go.alanpearce.eu/gomponents"
+	. "go.alanpearce.eu/gomponents/html"
+	"go.alanpearce.eu/gomponents/internal/assert"
 )
 
 type erroringWriter struct{}

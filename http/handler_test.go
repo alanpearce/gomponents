@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	g "maragu.dev/gomponents"
-	ghttp "maragu.dev/gomponents/http"
+	g "go.alanpearce.eu/gomponents"
+	ghttp "go.alanpearce.eu/gomponents/http"
 )
 
 func TestAdapt(t *testing.T) {
@@ -51,18 +51,21 @@ func TestAdapt(t *testing.T) {
 		}
 	})
 
-	t.Run("errors with status code if error implements StatusCode method and renders node", func(t *testing.T) {
-		h := ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (g.Node, error) {
-			return g.El("div"), statusCodeError{http.StatusTeapot}
-		})
-		code, body := get(t, h)
-		if code != http.StatusTeapot {
-			t.Fatal("status code is", code)
-		}
-		if body != "<div></div>" {
-			t.Fatal(`body is`, body)
-		}
-	})
+	t.Run(
+		"errors with status code if error implements StatusCode method and renders node",
+		func(t *testing.T) {
+			h := ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (g.Node, error) {
+				return g.El("div"), statusCodeError{http.StatusTeapot}
+			})
+			code, body := get(t, h)
+			if code != http.StatusTeapot {
+				t.Fatal("status code is", code)
+			}
+			if body != "<div></div>" {
+				t.Fatal(`body is`, body)
+			}
+		},
+	)
 
 	t.Run("errors with 500 if other error and renders node", func(t *testing.T) {
 		h := ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (g.Node, error) {

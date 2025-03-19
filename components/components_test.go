@@ -4,10 +4,10 @@ import (
 	"os"
 	"testing"
 
-	g "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/components"
-	. "maragu.dev/gomponents/html"
-	"maragu.dev/gomponents/internal/assert"
+	g "go.alanpearce.eu/gomponents"
+	. "go.alanpearce.eu/gomponents/components"
+	. "go.alanpearce.eu/gomponents/html"
+	"go.alanpearce.eu/gomponents/internal/assert"
 )
 
 func TestHTML5(t *testing.T) {
@@ -20,16 +20,27 @@ func TestHTML5(t *testing.T) {
 			Body:        []g.Node{Div()},
 		})
 
-		assert.Equal(t, `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hat</title><meta name="description" content="Love hats."><link rel="stylesheet" href="/hat.css"></head><body><div></div></body></html>`, e)
+		assert.Equal(
+			t,
+			`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hat</title><meta name="description" content="Love hats."><link rel="stylesheet" href="/hat.css"></head><body><div></div></body></html>`,
+			e,
+		)
 	})
 
-	t.Run("returns no language, description, and extra head/body elements if empty", func(t *testing.T) {
-		e := HTML5(HTML5Props{
-			Title: "Hat",
-		})
+	t.Run(
+		"returns no language, description, and extra head/body elements if empty",
+		func(t *testing.T) {
+			e := HTML5(HTML5Props{
+				Title: "Hat",
+			})
 
-		assert.Equal(t, `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hat</title></head><body></body></html>`, e)
-	})
+			assert.Equal(
+				t,
+				`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hat</title></head><body></body></html>`,
+				e,
+			)
+		},
+	)
 
 	t.Run("returns an html5 document template with additional HTML attributes", func(t *testing.T) {
 		e := HTML5(HTML5Props{
@@ -41,7 +52,11 @@ func TestHTML5(t *testing.T) {
 			HTMLAttrs:   []g.Node{Class("h-full"), ID("htmlid")},
 		})
 
-		assert.Equal(t, `<!doctype html><html lang="en" class="h-full" id="htmlid"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hat</title><meta name="description" content="Love hats."><link rel="stylesheet" href="/hat.css"></head><body><div></div></body></html>`, e)
+		assert.Equal(
+			t,
+			`<!doctype html><html lang="en" class="h-full" id="htmlid"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hat</title><meta name="description" content="Love hats."><link rel="stylesheet" href="/hat.css"></head><body><div></div></body></html>`,
+			e,
+		)
 	})
 }
 

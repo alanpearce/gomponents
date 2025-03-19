@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	g "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
-	"maragu.dev/gomponents/internal/assert"
+	g "go.alanpearce.eu/gomponents"
+	. "go.alanpearce.eu/gomponents/html"
+	"go.alanpearce.eu/gomponents/internal/assert"
 )
 
 func TestBooleanAttributes(t *testing.T) {
@@ -126,17 +126,17 @@ func TestVariadicAttributes(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Run(test.Name + "(no args)", func(t *testing.T) {
+		t.Run(test.Name+"(no args)", func(t *testing.T) {
 			n := g.El("div", test.Func())
 			assert.Equal(t, fmt.Sprintf(`<div %v></div>`, test.Name), n)
 		})
 
-		t.Run(test.Name +"(one arg)", func(t *testing.T) {
+		t.Run(test.Name+"(one arg)", func(t *testing.T) {
 			n := g.El("div", test.Func("hat"))
 			assert.Equal(t, fmt.Sprintf(`<div %v="hat"></div>`, test.Name), n)
 		})
 
-		t.Run(test.Name + "(two args panics)", func(t *testing.T) {
+		t.Run(test.Name+"(two args panics)", func(t *testing.T) {
 			defer func() {
 				if r := recover(); r == nil {
 					t.Errorf("expected a panic")

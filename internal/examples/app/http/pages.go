@@ -3,8 +3,8 @@ package http
 import (
 	"net/http"
 
-	. "maragu.dev/gomponents"
-	ghttp "maragu.dev/gomponents/http"
+	. "go.alanpearce.eu/gomponents"
+	ghttp "go.alanpearce.eu/gomponents/http"
 
 	"app/html"
 )

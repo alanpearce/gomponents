@@ -1,9 +1,9 @@
 package html
 
 import (
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/components"
-	. "maragu.dev/gomponents/html"
+	. "go.alanpearce.eu/gomponents"
+	. "go.alanpearce.eu/gomponents/components"
+	. "go.alanpearce.eu/gomponents/html"
 )
 
 func page(title string, children ...Node) Node {
@@ -56,7 +56,8 @@ func container(padY bool, children ...Node) Node {
 }
 
 func footer() Node {
-	return Div(Class("bg-gray-900 text-white shadow text-center h-16 flex items-center justify-center"),
+	return Div(
+		Class("bg-gray-900 text-white shadow text-center h-16 flex items-center justify-center"),
 		A(Href("https://www.gomponents.com"), Text("gomponents")),
 	)
 }
