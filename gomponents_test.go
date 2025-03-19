@@ -103,16 +103,19 @@ func TestEl(t *testing.T) {
 		assert.Equal(t, "<div></div>", e)
 	})
 
-	t.Run("renders an empty element without closing tag if it's a void kind element", func(t *testing.T) {
-		e := g.El("hr")
-		assert.Equal(t, "<hr>", e)
+	t.Run(
+		"renders an empty element without closing tag if it's a void kind element",
+		func(t *testing.T) {
+			e := g.El("hr")
+			assert.Equal(t, "<hr>", e)
 
-		e = g.El("br")
-		assert.Equal(t, "<br>", e)
+			e = g.El("br")
+			assert.Equal(t, "<br>", e)
 
-		e = g.El("img")
-		assert.Equal(t, "<img>", e)
-	})
+			e = g.El("img")
+			assert.Equal(t, "<img>", e)
+		},
+	)
 
 	t.Run("renders an empty element if only attributes given as children", func(t *testing.T) {
 		e := g.El("div", g.Attr("class", "hat"))
@@ -124,10 +127,13 @@ func TestEl(t *testing.T) {
 		assert.Equal(t, `<div class="hat"><br></div>`, e)
 	})
 
-	t.Run("renders attributes at the correct place regardless of placement in parameter list", func(t *testing.T) {
-		e := g.El("div", g.El("br"), g.Attr("class", "hat"))
-		assert.Equal(t, `<div class="hat"><br></div>`, e)
-	})
+	t.Run(
+		"renders attributes at the correct place regardless of placement in parameter list",
+		func(t *testing.T) {
+			e := g.El("div", g.El("br"), g.Attr("class", "hat"))
+			assert.Equal(t, `<div class="hat"><br></div>`, e)
+		},
+	)
 
 	t.Run("renders outside if node does not implement nodeTypeDescriber", func(t *testing.T) {
 		e := g.El("div", outsider{})
@@ -201,8 +207,11 @@ func TestRaw(t *testing.T) {
 }
 
 func ExampleRaw() {
-	e := g.El("span",
-		g.Raw(`<button onclick="javascript:alert('Party time!')">Party hats</button> &gt; normal hats.`),
+	e := g.El(
+		"span",
+		g.Raw(
+			`<button onclick="javascript:alert('Party time!')">Party hats</button> &gt; normal hats.`,
+		),
 	)
 	_ = e.Render(os.Stdout)
 	// Output: <span><button onclick="javascript:alert('Party time!')">Party hats</button> &gt; normal hats.</span>
@@ -216,8 +225,12 @@ func TestRawf(t *testing.T) {
 }
 
 func ExampleRawf() {
-	e := g.El("span",
-		g.Rawf(`<button onclick="javascript:alert('%v')">Party hats</button> &gt; normal hats.`, "Party time!"),
+	e := g.El(
+		"span",
+		g.Rawf(
+			`<button onclick="javascript:alert('%v')">Party hats</button> &gt; normal hats.`,
+			"Party time!",
+		),
 	)
 	_ = e.Render(os.Stdout)
 	// Output: <span><button onclick="javascript:alert('Party time!')">Party hats</button> &gt; normal hats.</span>
@@ -277,7 +290,10 @@ func TestGroup(t *testing.T) {
 	})
 
 	t.Run("does not ignore attributes at the second level and below", func(t *testing.T) {
-		children := []g.Node{g.El("div", g.Attr("class", "hat"), g.El("hr", g.Attr("id", "partyhat"))), g.El("span")}
+		children := []g.Node{
+			g.El("div", g.Attr("class", "hat"), g.El("hr", g.Attr("id", "partyhat"))),
+			g.El("span"),
+		}
 		e := g.Group(children)
 		assert.Equal(t, `<div class="hat"><hr id="partyhat"></div><span></span>`, e)
 	})
@@ -321,14 +337,21 @@ func TestIf(t *testing.T) {
 		n := g.El("div", g.If(false, g.El("span")))
 		assert.Equal(t, "<div></div>", n)
 	})
+
+	t.Run("returns second node if given and condition is false", func(t *testing.T) {
+		n := g.El("div", g.If(false, g.Text("first"), g.Text("second")))
+		assert.Equal(t, "<div>second</div>", n)
+	})
 }
 
 func ExampleIf() {
 	showMessage := true
 
 	e := g.El("div",
-		g.If(showMessage, g.El("span", g.Text("You lost your hat!"))),
-		g.If(!showMessage, g.El("span", g.Text("No messages."))),
+		g.If(showMessage,
+			g.El("span", g.Text("You lost your hat!")),
+			g.El("span", g.Text("No messages.")),
+		),
 	)
 
 	_ = e.Render(os.Stdout)
@@ -349,6 +372,15 @@ func TestIff(t *testing.T) {
 		}))
 		assert.Equal(t, "<div></div>", n)
 	})
+
+	t.Run("returns second node if given and condition is false", func(t *testing.T) {
+		n := g.El("div", g.Iff(false, func() g.Node {
+			return g.Text("first")
+		}, func() g.Node {
+			return g.Text("second")
+		}))
+		assert.Equal(t, "<div>second</div>", n)
+	})
 }
 
 func ExampleIff() {
@@ -359,11 +391,17 @@ func ExampleIff() {
 
 	e := g.El("div",
 		// This would panic using just If
-		g.Iff(user != nil, func() g.Node {
-			return g.Text(user.Name)
-		}),
+		g.Iff(
+			user != nil,
+			func() g.Node {
+				return g.Text(user.Name)
+			},
+			func() g.Node {
+				return g.Text("No user")
+			},
+		),
 	)
 
 	_ = e.Render(os.Stdout)
-	// Output: <div></div>
+	// Output: <div>No user</div>
 }

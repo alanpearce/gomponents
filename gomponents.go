@@ -298,20 +298,39 @@ func (g Group) Render(w io.Writer) error {
 // This helper function is good for inlining elements conditionally.
 // If it's important that the given [Node] is only evaluated if condition is true
 // (for example, when using nilable variables), use [Iff] instead.
-func If(condition bool, n Node) Node {
+func If(condition bool, n Node, otherwise ...Node) Node {
+	var o Node
+	switch len(otherwise) {
+	case 0:
+	case 1:
+		o = otherwise[0]
+	default:
+		panic("If must have just one or two nodes")
+	}
 	if condition {
 		return n
 	}
-	return nil
+	return o
 }
 
 // Iff condition is true, call the given function. Otherwise, return nil.
 // This helper function is good for inlining elements conditionally when the node depends on nilable data,
 // or some other code that could potentially panic.
 // If you just need simple conditional rendering, see [If].
-func Iff(condition bool, f func() Node) Node {
+func Iff(condition bool, f func() Node, otherwise ...func() Node) Node {
+	var o func() Node
+	switch len(otherwise) {
+	case 0:
+	case 1:
+		o = otherwise[0]
+	default:
+		panic("Iff must have just one or two nodes")
+	}
 	if condition {
 		return f()
+	}
+	if o != nil {
+		return o()
 	}
 	return nil
 }
