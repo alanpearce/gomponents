@@ -416,6 +416,10 @@ func S(children ...g.Node) g.Node {
 	return g.El("s", g.Group(children))
 }
 
+func Search(children ...g.Node) g.Node {
+	return g.El("search", g.Group(children))
+}
+
 func Samp(children ...g.Node) g.Node {
 	return g.El("samp", g.Group(children))
 }
