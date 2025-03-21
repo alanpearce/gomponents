@@ -264,16 +264,42 @@ func ExampleMap() {
 	// Output: <ul><li>party hat</li><li>super hat</li></ul>
 }
 
-func ExampleMap_index() {
+func TestMapWithIndex(t *testing.T) {
+	t.Run("maps items with index", func(t *testing.T) {
+		items := []string{"party hat", "super hat"}
+		e := g.El("ul", g.MapWithIndex(items, func(index int, item string) g.Node {
+			return g.El("li", g.Textf("%v: %v", index, item))
+		}))
+		assert.Equal(t, `<ul><li>0: party hat</li><li>1: super hat</li></ul>`, e)
+	})
+}
+
+func ExampleMapWithIndex() {
 	items := []string{"party hat", "super hat"}
-	var index int
-	e := g.El("ul", g.Map(items, func(i string) g.Node {
-		e := g.El("li", g.Textf("%v: %v", index, i))
-		index++
-		return e
+	e := g.El("ul", g.MapWithIndex(items, func(index int, item string) g.Node {
+		return g.El("li", g.Textf("%v: %v", index, item))
 	}))
 	_ = e.Render(os.Stdout)
 	// Output: <ul><li>0: party hat</li><li>1: super hat</li></ul>
+}
+
+func TestMapMap(t *testing.T) {
+	t.Run("maps a map of items", func(t *testing.T) {
+		items := map[string]string{"party": "hat", "super": "hat"}
+		e := g.El("ul", g.MapMap(items, func(key string, value string) g.Node {
+			return g.El("li", g.Textf("%v: %v", key, value))
+		}))
+		assert.Equal(t, `<ul><li>party: hat</li><li>super: hat</li></ul>`, e)
+	})
+}
+
+func ExampleMapMap() {
+	items := map[string]string{"party": "hat", "super": "hat"}
+	e := g.El("ul", g.MapMap(items, func(key string, value string) g.Node {
+		return g.El("li", g.Textf("%v: %v", key, value))
+	}))
+	_ = e.Render(os.Stdout)
+	// Output: <ul><li>party: hat</li><li>super: hat</li></ul>
 }
 
 func TestGroup(t *testing.T) {
