@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"iter"
 	"strings"
 )
 
@@ -275,6 +276,33 @@ func MapMap[K comparable, T any](ts map[K]T, cb func(K, T) Node) Group {
 	}
 
 	return nodes
+}
+
+// Map an iterator of anything to an IterNode (which is just an [iter.Seq] of [Node]-s)
+func MapIter[T any](ts iter.Seq[T], cb func(T) Node) IterNode {
+	return IterNode{
+		func(yield func(Node) bool) {
+			for t := range ts {
+				if !yield(cb(t)) {
+					return
+				}
+			}
+		},
+	}
+}
+
+type IterNode struct {
+	iter.Seq[Node]
+}
+
+func (it IterNode) Render(w io.Writer) error {
+	for node := range it.Seq {
+		if err := node.Render(w); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // Group a slice of [Node]-s into one Node, while still being usable like a regular slice of [Node]-s.

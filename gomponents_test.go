@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"slices"
 	"strings"
 	"testing"
 
@@ -300,6 +301,23 @@ func ExampleMapMap() {
 	}))
 	_ = e.Render(os.Stdout)
 	// Output: <ul><li>party: hat</li><li>super: hat</li></ul>
+}
+
+func TestMapIter(t *testing.T) {
+	items := slices.Values([]string{"party hat", "super hat"})
+	e := g.El("ul", g.MapIter(items, func(value string) g.Node {
+		return g.El("li", g.Text(value))
+	}))
+	assert.Equal(t, `<ul><li>party hat</li><li>super hat</li></ul>`, e)
+}
+
+func ExampleMapIter() {
+	items := slices.Values([]string{"party hat", "super hat"})
+	e := g.El("ul", g.MapIter(items, func(value string) g.Node {
+		return g.El("li", g.Text(value))
+	}))
+	_ = e.Render(os.Stdout)
+	// Output: <ul><li>party hat</li><li>super hat</li></ul>
 }
 
 func TestGroup(t *testing.T) {
