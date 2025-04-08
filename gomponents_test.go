@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"slices"
 	"strings"
@@ -318,6 +319,25 @@ func ExampleMapIter() {
 	}))
 	_ = e.Render(os.Stdout)
 	// Output: <ul><li>party hat</li><li>super hat</li></ul>
+}
+
+func TestMapIter2(t *testing.T) {
+	t.Run("maps a iter.Seq2 of items", func(t *testing.T) {
+		items := maps.All(map[string]string{"party": "hat", "super": "hat"})
+		e := g.El("ul", g.MapIter2(items, func(key string, value string) g.Node {
+			return g.El("li", g.Textf("%v: %v", key, value))
+		}))
+		assert.Equal(t, `<ul><li>party: hat</li><li>super: hat</li></ul>`, e)
+	})
+}
+
+func ExampleMapIter2() {
+	items := maps.All(map[string]string{"party": "hat", "super": "hat"})
+	e := g.El("ul", g.MapIter2(items, func(key string, value string) g.Node {
+		return g.El("li", g.Textf("%v: %v", key, value))
+	}))
+	_ = e.Render(os.Stdout)
+	// Output: <ul><li>party: hat</li><li>super: hat</li></ul>
 }
 
 func TestGroup(t *testing.T) {

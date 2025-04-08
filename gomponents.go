@@ -291,6 +291,19 @@ func MapIter[T any](ts iter.Seq[T], cb func(T) Node) IterNode {
 	}
 }
 
+// Map an iterator of pairs of values to an IterNode (which is just an [iter.Seq] of [Node]-s)
+func MapIter2[K, V any](ts iter.Seq2[K, V], cb func(K, V) Node) IterNode {
+	return IterNode{
+		func(yield func(Node) bool) {
+			for k, v := range ts {
+				if !yield(cb(k, v)) {
+					return
+				}
+			}
+		},
+	}
+}
+
 type IterNode struct {
 	iter.Seq[Node]
 }
