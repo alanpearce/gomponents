@@ -1,10 +1,10 @@
 // Package http provides adapters to render gomponents in http handlers.
-package http
+package http // import "alin.ovh/gomponents/http"
 
 import (
 	"net/http"
 
-	g "go.alanpearce.eu/gomponents"
+	g "alin.ovh/gomponents"
 )
 
 // Handler is like [http.Handler] but returns a [g.Node] and an error.

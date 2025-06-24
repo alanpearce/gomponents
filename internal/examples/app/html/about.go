@@ -3,8 +3,8 @@ package html
 import (
 	"time"
 
-	. "go.alanpearce.eu/gomponents"
-	. "go.alanpearce.eu/gomponents/html"
+	. "alin.ovh/gomponents"
+	. "alin.ovh/gomponents/html"
 )
 
 func AboutPage() Node {

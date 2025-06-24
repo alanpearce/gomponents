@@ -1,7 +1,7 @@
-package html
+package html // import "alin.ovh/gomponents/html"
 
 import (
-	g "go.alanpearce.eu/gomponents"
+	g "alin.ovh/gomponents"
 )
 
 func Async() g.Node {

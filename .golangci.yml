@@ -4,4 +4,4 @@ linters:
   settings:
     staticcheck:
       dot-import-whitelist:
-        - "go.alanpearce.eu/gomponents/html"
+        - "alin.ovh/gomponents/html"

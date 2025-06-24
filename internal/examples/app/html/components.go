@@ -1,9 +1,9 @@
 package html
 
 import (
-	. "go.alanpearce.eu/gomponents"
-	. "go.alanpearce.eu/gomponents/components"
-	. "go.alanpearce.eu/gomponents/html"
+	. "alin.ovh/gomponents"
+	. "alin.ovh/gomponents/components"
+	. "alin.ovh/gomponents/html"
 )
 
 func page(title string, children ...Node) Node {

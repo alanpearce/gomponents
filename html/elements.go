@@ -3,12 +3,12 @@
 // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element for a list of elements.
 //
 // See https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes for a list of attributes.
-package html
+package html // import "alin.ovh/gomponents/html"
 
 import (
 	"io"
 
-	g "go.alanpearce.eu/gomponents"
+	g "alin.ovh/gomponents"
 )
 
 // Doctype returns a special kind of [g.Node] that prefixes its sibling with the string "<!doctype html>".

@@ -3,8 +3,8 @@ package http
 import (
 	"net/http"
 
-	. "go.alanpearce.eu/gomponents"
-	ghttp "go.alanpearce.eu/gomponents/http"
+	. "alin.ovh/gomponents"
+	ghttp "alin.ovh/gomponents/http"
 
 	"app/html"
 )

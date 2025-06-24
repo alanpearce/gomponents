@@ -3,10 +3,10 @@ package import_test
 import (
 	"testing"
 
-	. "go.alanpearce.eu/gomponents"
-	. "go.alanpearce.eu/gomponents/components"
-	. "go.alanpearce.eu/gomponents/html"
-	. "go.alanpearce.eu/gomponents/http"
+	. "alin.ovh/gomponents"
+	. "alin.ovh/gomponents/components"
+	. "alin.ovh/gomponents/html"
+	. "alin.ovh/gomponents/http"
 )
 
 func TestImports(t *testing.T) {

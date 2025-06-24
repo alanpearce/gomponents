@@ -1,3 +1,3 @@
-module go.alanpearce.eu/gomponents
+module alin.ovh/gomponents
 
 go 1.23

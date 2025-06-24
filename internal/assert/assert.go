@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	g "go.alanpearce.eu/gomponents"
+	g "alin.ovh/gomponents"
 )
 
 // Equal checks for equality between the given expected string and the rendered Node string.

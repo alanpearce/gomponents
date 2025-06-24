@@ -2,10 +2,10 @@
 
 <img src="logo.png" alt="Logo" width="300" align="right">
 
-[![GoDoc](https://pkg.go.dev/badge/go.alanpearce.eu/gomponents)](https://pkg.go.dev/go.alanpearce.eu/gomponents)
+[![GoDoc](https://pkg.go.dev/badge/alin.ovh/gomponents)](https://pkg.go.dev/alin.ovh/gomponents)
 [![Go](https://github.com/alanpearce/gomponents/actions/workflows/ci.yml/badge.svg)](https://github.com/alanpearce/gomponents/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/alanpearce/gomponents/branch/main/graph/badge.svg)](https://codecov.io/gh/alanpearce/gomponents)
-[![Go Report Card](https://goreportcard.com/badge/go.alanpearce.eu/gomponents)](https://goreportcard.com/report/go.alanpearce.eu/gomponents)
+[![Go Report Card](https://goreportcard.com/badge/alin.ovh/gomponents)](https://goreportcard.com/report/alin.ovh/gomponents)
 
 Try HTML components in pure Go.
 
@@ -14,7 +14,7 @@ They render to HTML 5, and make it easy for you to build reusable components.
 So you can focus on building your app instead of learning yet another templating language.
 
 ```shell
-go get go.alanpearce.eu/gomponents
+go get alin.ovh/gomponents
 ```
 
 Made with ✨sparkles✨ by [maragu](https://www.maragu.dev/), forked by [alanpearce](https://alanpearce.eu) to add helpers.
@@ -46,16 +46,16 @@ Check out [www.gomponents.com](https://www.gomponents.com) for an introduction.
 ## Usage
 
 ```shell
-go get go.alanpearce.eu/gomponents
+go get alin.ovh/gomponents
 ```
 
 ```go
 package main
 
 import (
-	. "go.alanpearce.eu/gomponents"
-	. "go.alanpearce.eu/gomponents/components"
-	. "go.alanpearce.eu/gomponents/html"
+	. "alin.ovh/gomponents"
+	. "alin.ovh/gomponents/components"
+	. "alin.ovh/gomponents/html"
 )
 
 func Navbar(authenticated bool, currentPath string) Node {

@@ -1,13 +1,13 @@
 // Package components provides high-level components and helpers that are composed of low-level elements and attributes.
-package components
+package components // import "alin.ovh/gomponents/components"
 
 import (
 	"io"
 	"sort"
 	"strings"
 
-	g "go.alanpearce.eu/gomponents"
-	. "go.alanpearce.eu/gomponents/html"
+	g "alin.ovh/gomponents"
+	. "alin.ovh/gomponents/html"
 )
 
 // HTML5Props for [HTML5].

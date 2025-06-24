@@ -16,7 +16,7 @@
 // For higher-level HTML components, see the package components.
 //
 // For HTTP helpers, see the package http.
-package gomponents
+package gomponents // import "alin.ovh/gomponents"
 
 import (
 	"fmt"

@@ -1,8 +1,8 @@
 package html
 
 import (
-	. "go.alanpearce.eu/gomponents"
-	. "go.alanpearce.eu/gomponents/html"
+	. "alin.ovh/gomponents"
+	. "alin.ovh/gomponents/html"
 )
 
 func HomePage(items []string) Node {
