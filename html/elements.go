@@ -256,6 +256,10 @@ func Script(children ...g.Node) g.Node {
 	return g.El("script", children...)
 }
 
+func Search(children ...g.Node) g.Node {
+	return g.El("search", children...)
+}
+
 func Section(children ...g.Node) g.Node {
 	return g.El("section", children...)
 }
@@ -414,10 +418,6 @@ func Q(children ...g.Node) g.Node {
 
 func S(children ...g.Node) g.Node {
 	return g.El("s", g.Group(children))
-}
-
-func Search(children ...g.Node) g.Node {
-	return g.El("search", g.Group(children))
 }
 
 func Samp(children ...g.Node) g.Node {

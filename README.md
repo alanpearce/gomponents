@@ -138,3 +138,30 @@ In either case, the less-used variant also exists in the codebase:
 - `label` (`Label`/`LabelAttr`, `LabelEl` also exists)
 - `style` (`StyleEl`/`Style`, `StyleAttr` also exists)
 - `title` (`TitleEl`/`Title`, `TitleAttr` also exists)
+
+<details>
+	<summary>Example with `Style` and `StyleEl`</summary>
+
+```go
+package html
+
+import (
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/components"
+	. "maragu.dev/gomponents/html"
+)
+
+func MyPage() Node {
+	return HTML5(HTML5Props{
+		Title: "My Page",
+		Head: []Node{
+			StyleEl(g.Raw("body {background-color: #fff; }")),
+		},
+		Body: []Node{
+			H1(Style("color: #000"), Text("My Page")),
+		},
+	})
+}
+```
+
+</details>
