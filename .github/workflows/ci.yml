@@ -22,13 +22,14 @@ jobs:
         go:
           - "1.23"
           - "1.24"
+          - "1.25"
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.go }}
           check-latest: true
@@ -48,21 +49,33 @@ jobs:
     name: Benchmark
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        go:
+          - "1.18"
+          - "1.19"
+          - "1.20"
+          - "1.21"
+          - "1.22"
+          - "1.23"
+          - "1.24"
+          - "1.25"
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
-          go-version-file: go.mod
+          go-version: ${{ matrix.go }}
           check-latest: true
 
       - name: Run Benchmarks
         run: |
-          echo "# Benchmark Results" >> $GITHUB_STEP_SUMMARY
+          echo "# Benchmark Results for Go ${{ matrix.go }}" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          go test -bench=. ./... 2>&1 | tee -a $GITHUB_STEP_SUMMARY
+          go test -bench . -benchmem ./... 2>&1 | tee -a $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
 
   lint:
@@ -70,10 +83,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
           check-latest: true
