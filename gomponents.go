@@ -31,6 +31,12 @@ type Node interface {
 	Render(w io.Writer) error
 }
 
+// NodeWriter is a [Node] that can also be used as an [io.WriterTo]
+type NodeWriter interface {
+	Node
+	io.WriterTo
+}
+
 // NodeType describes what type of [Node] it is, currently either an [ElementType] or an [AttributeType].
 // This decides where a [Node] should be rendered.
 // Nodes default to being [ElementType].
@@ -68,6 +74,32 @@ func (n NodeFunc) String() string {
 	return b.String()
 }
 
+// NodeWriterFunc is a render function that is also a [Node] of [ElementType].
+type NodeWriterFunc func(io.Writer) (int64, error)
+
+// Render satisfies [Node].
+func (n NodeWriterFunc) Render(w io.Writer) error {
+	_, err := n(w)
+	return err
+}
+
+// WriteTo satisfies [io.WriterTo].
+func (n NodeWriterFunc) WriteTo(w io.Writer) (int64, error) {
+	return n(w)
+}
+
+// Type satisfies [nodeTypeDescriber].
+func (n NodeWriterFunc) Type() NodeType {
+	return ElementType
+}
+
+// String satisfies [fmt.Stringer].
+func (n NodeWriterFunc) String() string {
+	var b strings.Builder
+	_ = n.Render(&b)
+	return b.String()
+}
+
 var (
 	lt      = []byte("<")
 	gt      = []byte(">")
@@ -81,100 +113,121 @@ var (
 // If an element is a void element, non-attribute children nodes are ignored.
 // Use this if no convenience creator exists in the html package.
 func El(name string, children ...Node) Node {
-	return NodeFunc(func(w io.Writer) error {
-		var err error
-
+	return NodeWriterFunc(func(w io.Writer) (total int64, err error) {
+		var n int
 		sw, ok := w.(io.StringWriter)
 
-		if _, err = w.Write(lt); err != nil {
-			return err
+		n, err = w.Write(lt)
+		if err != nil {
+			return
 		}
+		total += int64(n)
 
 		if ok {
-			if _, err = sw.WriteString(name); err != nil {
-				return err
+			n, err = sw.WriteString(name)
+			if err != nil {
+				return
 			}
 		} else {
-			if _, err = w.Write([]byte(name)); err != nil {
-				return err
+			n, err = w.Write([]byte(name))
+			if err != nil {
+				return
 			}
 		}
+		total += int64(n)
 
 		for _, c := range children {
-			if err = renderChild(w, c, AttributeType); err != nil {
-				return err
+			n, err := renderChild(w, c, AttributeType)
+			if err != nil {
+				return total, err
 			}
+			total += n
 		}
 
-		if _, err = w.Write(gt); err != nil {
-			return err
+		n, err = w.Write(gt)
+		if err != nil {
+			return
 		}
+		total += int64(n)
 
 		if isVoidElement(name) {
-			return nil
+			return
 		}
 
 		for _, c := range children {
-			if err = renderChild(w, c, ElementType); err != nil {
-				return err
+			n, err := renderChild(w, c, ElementType)
+			if err != nil {
+				return total, err
 			}
+			total += n
 		}
 
-		if _, err = w.Write(ltSlash); err != nil {
-			return err
+		n, err = w.Write(ltSlash)
+		if err != nil {
+			return
 		}
+		total += int64(n)
 
 		if ok {
-			if _, err = sw.WriteString(name); err != nil {
-				return err
-			}
+			n, err = sw.WriteString(name)
 		} else {
-			if _, err = w.Write([]byte(name)); err != nil {
-				return err
-			}
+			n, err = w.Write([]byte(name))
 		}
-
-		if _, err = w.Write(gt); err != nil {
-			return err
+		if err != nil {
+			return
 		}
+		total += int64(n)
 
-		return nil
+		n, err = w.Write(gt)
+		if err != nil {
+			return
+		}
+		total += int64(n)
+
+		return
 	})
 }
 
 // renderChild c to the given writer w if the node type is desiredType.
-func renderChild(w io.Writer, c Node, desiredType NodeType) error {
+func renderChild(w io.Writer, c Node, desiredType NodeType) (int64, error) {
+	var count int64
 	if c == nil {
-		return nil
+		return count, nil
 	}
 
 	// Rendering groups like this is still important even though a group can render itself,
 	// since otherwise attributes will sometimes be ignored.
 	if g, ok := c.(Group); ok {
 		for _, groupC := range g {
-			if err := renderChild(w, groupC, desiredType); err != nil {
-				return err
+			n, err := renderChild(w, groupC, desiredType)
+			if err != nil {
+				return count, err
 			}
+			count += n
 		}
-		return nil
+		return count, nil
 	}
 
 	switch desiredType {
 	case ElementType:
 		if p, ok := c.(nodeTypeDescriber); !ok || p.Type() == desiredType {
-			if err := c.Render(w); err != nil {
-				return err
+			n, err := c.(NodeWriter).WriteTo(w)
+			if err != nil {
+				return count, err
 			}
+			count += n
 		}
 	case AttributeType:
 		if p, ok := c.(nodeTypeDescriber); ok && p.Type() == desiredType {
-			if err := c.Render(w); err != nil {
-				return err
+			n, err := c.(NodeWriter).WriteTo(w)
+			if err != nil {
+				return count, err
 			}
+			count += n
 		}
 	}
 
-	return nil
+	return count, nil
 }
 
 // voidElements don't have end tags and must be treated differently in the rendering.
@@ -219,59 +272,70 @@ func Attr(name string, value ...string) Node {
 		panic("attribute must be just name or name and value pair")
 	}
 
-	return attrFunc(func(w io.Writer) error {
-		var err error
-
+	return attrFunc(func(w io.Writer) (total int64, err error) {
+		var n int
 		sw, ok := w.(io.StringWriter)
 
-		if _, err = w.Write(space); err != nil {
-			return err
+		n, err = w.Write(space)
+		if err != nil {
+			return
 		}
+		total += int64(n)
 
 		// Attribute name
 		if ok {
-			if _, err = sw.WriteString(name); err != nil {
-				return err
-			}
+			n, err = sw.WriteString(name)
 		} else {
-			if _, err = w.Write([]byte(name)); err != nil {
-				return err
-			}
+			n, err = w.Write([]byte(name))
 		}
+		if err != nil {
+			return
+		}
+		total += int64(n)
 
 		if len(value) == 0 {
-			return nil
+			return
 		}
 
-		if _, err = w.Write(equalQuote); err != nil {
-			return err
+		n, err = w.Write(equalQuote)
+		if err != nil {
+			return
 		}
+		total += int64(n)
 
 		// Attribute value
 		if ok {
-			if _, err = sw.WriteString(template.HTMLEscapeString(value[0])); err != nil {
-				return err
-			}
+			n, err = sw.WriteString(template.HTMLEscapeString(value[0]))
 		} else {
-			if _, err = w.Write([]byte(template.HTMLEscapeString(value[0]))); err != nil {
-				return err
-			}
+			n, err = w.Write([]byte(template.HTMLEscapeString(value[0])))
 		}
-
-		if _, err = w.Write(quote); err != nil {
-			return err
+		if err != nil {
+			return
 		}
+		total += int64(n)
 
-		return nil
+		n, err = w.Write(quote)
+		if err != nil {
+			return
+		}
+		total += int64(n)
+
+		return
 	})
 }
 
 // attrFunc is a render function that is also a [Node] of [AttributeType].
-// It's basically the same as [NodeFunc], but for attributes.
-type attrFunc func(io.Writer) error
+// It's basically the same as [NodeWriterFunc], but for attributes.
+type attrFunc func(io.Writer) (int64, error)
 
 // Render satisfies [Node].
 func (a attrFunc) Render(w io.Writer) error {
+	_, err := a(w)
+	return err
+}
+
+// WriteTo satisfies [io.WriterTo].
+func (a attrFunc) WriteTo(w io.Writer) (int64, error) {
 	return a(w)
 }
 
@@ -289,49 +353,49 @@ func (a attrFunc) String() string {
 
 // Text creates a text DOM [Node] that Renders the escaped string t.
 func Text(t string) Node {
-	return NodeFunc(func(w io.Writer) error {
+	return NodeWriterFunc(func(w io.Writer) (int64, error) {
 		if w, ok := w.(io.StringWriter); ok {
-			_, err := w.WriteString(template.HTMLEscapeString(t))
-			return err
+			n, err := w.WriteString(template.HTMLEscapeString(t))
+			return int64(n), err
 		}
-		_, err := w.Write([]byte(template.HTMLEscapeString(t)))
-		return err
+		n, err := w.Write([]byte(template.HTMLEscapeString(t)))
+		return int64(n), err
 	})
 }
 
 // Textf creates a text DOM [Node] that Renders the interpolated and escaped string format.
 func Textf(format string, a ...any) Node {
-	return NodeFunc(func(w io.Writer) error {
+	return NodeWriterFunc(func(w io.Writer) (int64, error) {
 		if w, ok := w.(io.StringWriter); ok {
-			_, err := w.WriteString(template.HTMLEscapeString(fmt.Sprintf(format, a...)))
-			return err
+			n, err := w.WriteString(template.HTMLEscapeString(fmt.Sprintf(format, a...)))
+			return int64(n), err
 		}
-		_, err := w.Write([]byte(template.HTMLEscapeString(fmt.Sprintf(format, a...))))
-		return err
+		n, err := w.Write([]byte(template.HTMLEscapeString(fmt.Sprintf(format, a...))))
+		return int64(n), err
 	})
 }
 
 // Raw creates a text DOM [Node] that just Renders the unescaped string t.
 func Raw(t string) Node {
-	return NodeFunc(func(w io.Writer) error {
+	return NodeWriterFunc(func(w io.Writer) (int64, error) {
 		if w, ok := w.(io.StringWriter); ok {
-			_, err := w.WriteString(t)
-			return err
+			n, err := w.WriteString(t)
+			return int64(n), err
 		}
-		_, err := w.Write([]byte(t))
-		return err
+		n, err := w.Write([]byte(t))
+		return int64(n), err
 	})
 }
 
 // Rawf creates a text DOM [Node] that just Renders the interpolated and unescaped string format.
 func Rawf(format string, a ...any) Node {
-	return NodeFunc(func(w io.Writer) error {
+	return NodeWriterFunc(func(w io.Writer) (int64, error) {
 		if w, ok := w.(io.StringWriter); ok {
-			_, err := w.WriteString(fmt.Sprintf(format, a...))
-			return err
+			n, err := w.WriteString(fmt.Sprintf(format, a...))
+			return int64(n), err
 		}
-		_, err := fmt.Fprintf(w, format, a...)
-		return err
+		n, err := fmt.Fprintf(w, format, a...)
+		return int64(n), err
 	})
 }
 
@@ -394,14 +458,23 @@ type IterNode struct {
 	iter.Seq[Node]
 }
 
-func (it IterNode) Render(w io.Writer) error {
+func (it IterNode) WriteTo(w io.Writer) (int64, error) {
+	var written int64
 	for node := range it.Seq {
-		if err := node.Render(w); err != nil {
-			return err
+		n, err := node.(NodeWriter).WriteTo(w)
+		if err != nil {
+			return written, err
 		}
+
+		written += n
 	}
 
-	return nil
+	return written, nil
+}
+
+func (it IterNode) Render(w io.Writer) error {
+	_, err := it.WriteTo(w)
+	return err
 }
 
 // Group a slice of [Node]-s into one Node, while still being usable like a regular slice of [Node]-s.
@@ -416,14 +489,23 @@ func (g Group) String() string {
 	return b.String()
 }
 
+// WriteTo satisfies [io.Writer].
+func (g Group) WriteTo(w io.Writer) (int64, error) {
+	var total int64
+	for _, c := range g {
+		n, err := renderChild(w, c, ElementType)
+		if err != nil {
+			return total, err
+		}
+		total += n
+	}
+	return total, nil
+}
+
 // Render satisfies [Node].
 func (g Group) Render(w io.Writer) error {
-	for _, c := range g {
-		if err := renderChild(w, c, ElementType); err != nil {
-			return err
-		}
-	}
-	return nil
+	_, err := g.WriteTo(w)
+	return err
 }
 
 // If condition is true, return the given [Node]. Otherwise, return nil.

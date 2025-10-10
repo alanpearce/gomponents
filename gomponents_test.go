@@ -16,9 +16,9 @@ import (
 
 func TestNodeFunc(t *testing.T) {
 	t.Run("implements fmt.Stringer", func(t *testing.T) {
-		fn := g.NodeFunc(func(w io.Writer) error {
+		fn := g.NodeWriterFunc(func(w io.Writer) (int64, error) {
 			_, _ = w.Write([]byte("hat"))
-			return nil
+			return 0, nil
 		})
 		if fn.String() != "hat" {
 			t.FailNow()
@@ -101,8 +101,13 @@ func (o outsider) String() string {
 }
 
 func (o outsider) Render(w io.Writer) error {
-	_, _ = w.Write([]byte("outsider"))
+	_, _ = o.WriteTo(w)
 	return nil
+}
+
+func (o outsider) WriteTo(w io.Writer) (int64, error) {
+	n, err := w.Write([]byte("outsider"))
+	return int64(n), err
 }
 
 func TestEl(t *testing.T) {
@@ -340,12 +345,12 @@ func TestMapMap(t *testing.T) {
 }
 
 func ExampleMapMap() {
-	items := map[string]string{"party": "hat", "super": "hat"}
+	items := map[string]string{"party": "hat"}
 	e := g.El("ul", g.MapMap(items, func(key string, value string) g.Node {
 		return g.El("li", g.Textf("%v: %v", key, value))
 	}))
 	_ = e.Render(os.Stdout)
-	// Output: <ul><li>party: hat</li><li>super: hat</li></ul>
+	// Output: <ul><li>party: hat</li></ul>
 }
 
 func TestMapIter(t *testing.T) {

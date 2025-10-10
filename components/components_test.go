@@ -103,12 +103,17 @@ type brokenNode struct {
 	first bool
 }
 
-func (b *brokenNode) Render(io.Writer) error {
+func (b *brokenNode) WriteTo(io.Writer) (int64, error) {
 	if !b.first {
-		return nil
+		return 0, nil
 	}
 	b.first = false
-	return errors.New("oh no")
+	return 0, errors.New("oh no")
+}
+
+func (b *brokenNode) Render(w io.Writer) error {
+	_, err := b.WriteTo(w)
+	return err
 }
 
 func (b *brokenNode) Type() g.NodeType {

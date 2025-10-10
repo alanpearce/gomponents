@@ -83,6 +83,10 @@ func TestAdapt(t *testing.T) {
 
 type erroringNode struct{}
 
+func (n erroringNode) WriteTo(io.Writer) (int64, error) {
+	return 0, errors.New("don't want to")
+}
+
 func (n erroringNode) Render(io.Writer) error {
 	return errors.New("don't want to")
 }

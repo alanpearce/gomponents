@@ -23,6 +23,8 @@ Made with ✨sparkles✨ by [maragu](https://www.maragu.dev/), forked by [alanpe
 
 - `MapWithIndex` and `MapMap` for mapping over slices and maps respectively
 - `If` and `Iff` take an extra argument to render a fallback component when the condition is false
+- Built-in `Node` implementations also implement `io.WriterTo`
+	- Users of `NodeFunc` can use `NodeWriterFunc` to keep compatibility
 
 ## Features
 
@@ -41,7 +43,7 @@ Check out [www.gomponents.com](https://www.gomponents.com) for an introduction.
   - `Map` for mapping data to components and `Group` for grouping components,
   - and `If`/`Iff` for conditional rendering.
 - No external dependencies
-- Mature and stable, no breaking changes
+- ~~Mature and stable, no breaking changes~~
 
 ## Usage
 

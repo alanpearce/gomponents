@@ -44,6 +44,12 @@ type Classes map[string]bool
 
 // Render satisfies [g.Node].
 func (c Classes) Render(w io.Writer) error {
+	_, err := c.WriteTo(w)
+	return err
+}
+
+// WriteTo satisfies [io.WriterTo].
+func (c Classes) WriteTo(w io.Writer) (int64, error) {
 	included := make([]string, 0, len(c))
 	for c, include := range c {
 		if include {
@@ -51,7 +57,7 @@ func (c Classes) Render(w io.Writer) error {
 		}
 	}
 	sort.Strings(included)
-	return Class(strings.Join(included, " ")).Render(w)
+	return Class(strings.Join(included, " ")).(g.NodeWriter).WriteTo(w)
 }
 
 func (c Classes) Type() g.NodeType {

@@ -14,10 +14,14 @@ func Equal(t *testing.T, expected string, actual g.Node) {
 	t.Helper()
 
 	var b strings.Builder
-	err := actual.Render(&b)
+	n, err := actual.(g.NodeWriter).WriteTo(&b)
 	if err != nil {
 		t.Fatal("error rendering actual:", err)
 	}
+	if n != int64(len(expected)) {
+		t.Fatalf(`expected length %d but got %d`, len(expected), n)
+	}
+
 	if expected != b.String() {
 		t.Fatalf(`expected "%v" but got "%v"`, expected, b.String())
 	}
