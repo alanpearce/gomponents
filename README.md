@@ -169,9 +169,9 @@ In either case, the less-used variant also exists in the codebase:
 package html
 
 import (
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/components"
-	. "maragu.dev/gomponents/html"
+	. "alan.ovh/gomponents"
+	. "alan.ovh/gomponents/components"
+	. "alan.ovh/gomponents/html"
 )
 
 func MyPage() Node {

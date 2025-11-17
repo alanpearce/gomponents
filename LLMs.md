@@ -24,7 +24,7 @@ The library automatically handles proper placement during rendering.
 ## Installation
 
 ```bash
-go get maragu.dev/gomponents
+go get alan.ovh/gomponents
 ```
 
 ## Import Patterns
@@ -33,9 +33,9 @@ go get maragu.dev/gomponents
 Contrary to common idiomatic Go, dot imports are the recommended approach for gomponents as they make the code read like a DSL for HTML:
 ```go
 import (
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/html"
-    . "maragu.dev/gomponents/components"
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/html"
+    . "alan.ovh/gomponents/components"
 )
 ```
 
@@ -43,16 +43,16 @@ import (
 For those who prefer avoiding dot imports, use single-letter aliases:
 ```go
 import (
-    g "maragu.dev/gomponents"
-    h "maragu.dev/gomponents/html"
-    c "maragu.dev/gomponents/components"
-    ghttp "maragu.dev/gomponents/http"
+    g "alan.ovh/gomponents"
+    h "alan.ovh/gomponents/html"
+    c "alan.ovh/gomponents/components"
+    ghttp "alan.ovh/gomponents/http"
 )
 ```
 
 ## Package Structure
 
-### maragu.dev/gomponents (core)
+### alan.ovh/gomponents (core)
 Core interfaces and helper functions:
 - `Node` interface
 - `El(name string, children ...Node)` - create custom elements
@@ -66,18 +66,18 @@ Core interfaces and helper functions:
 - `If(condition bool, node Node)` - conditional rendering
 - `Iff(condition bool, func() Node)` - lazy conditional rendering
 
-### maragu.dev/gomponents/html
+### alan.ovh/gomponents/html
 All HTML5 elements and attributes as Go functions:
 - Elements: `Div()`, `Span()`, `A()`, `H1()`, etc.
 - Attributes: `Class()`, `ID()`, `Href()`, `Style()`, etc.
 - Special: `Doctype()` for HTML5 doctype declaration
 
-### maragu.dev/gomponents/components
+### alan.ovh/gomponents/components
 Higher-level components:
 - `HTML5(HTML5Props)` - complete HTML5 document structure
 - `Classes` - dynamic class management map
 
-### maragu.dev/gomponents/http
+### alan.ovh/gomponents/http
 HTTP handler integration:
 - `Handler` type - returns (Node, error)
 - `Adapt()` - converts Handler to http.HandlerFunc
@@ -87,8 +87,8 @@ HTTP handler integration:
 ### Simple Element
 ```go
 import (
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/html"
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/html"
 )
 
 // <div class="container">Hello, World!</div>
@@ -98,8 +98,8 @@ Div(Class("container"), Text("Hello, World!"))
 ### Nested Structure
 ```go
 import (
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/html"
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/html"
 )
 
 // <nav><a href="/">Home</a><a href="/about">About</a></nav>
@@ -112,9 +112,9 @@ Nav(
 ### Complete Page
 ```go
 import (
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/components"
-    . "maragu.dev/gomponents/html"
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/components"
+    . "alan.ovh/gomponents/html"
 )
 
 func Page() Node {
@@ -138,8 +138,8 @@ func Page() Node {
 Create reusable components as functions:
 ```go
 import (
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/html"
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/html"
 )
 
 func Card(title, content string) Node {
@@ -153,8 +153,8 @@ func Card(title, content string) Node {
 ### Dynamic Rendering
 ```go
 import (
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/html"
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/html"
 )
 
 func UserList(users []User) Node {
@@ -169,14 +169,14 @@ func UserList(users []User) Node {
 ### Conditional Rendering
 ```go
 import (
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/html"
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/html"
 )
 
 func NavBar(isLoggedIn bool, username string) Node {
     return Nav(
         A(Href("/"), Text("Home")),
-        If(isLoggedIn, 
+        If(isLoggedIn,
             Span(Text("Welcome, " + username))),
         If(!isLoggedIn,
             A(Href("/login"), Text("Login"))),
@@ -187,9 +187,9 @@ func NavBar(isLoggedIn bool, username string) Node {
 ### Dynamic Classes
 ```go
 import (
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/components"
-    . "maragu.dev/gomponents/html"
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/components"
+    . "alan.ovh/gomponents/html"
 )
 
 Div(
@@ -229,10 +229,10 @@ Img(Src("pic.jpg"), Text("ignored"))
 ```go
 import (
     "net/http"
-    
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/html"
-    ghttp "maragu.dev/gomponents/http"
+
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/html"
+    ghttp "alan.ovh/gomponents/http"
 )
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) (Node, error) {
@@ -247,9 +247,9 @@ http.HandleFunc("/", ghttp.Adapt(HomeHandler))
 ```go
 import (
     "net/http"
-    
-    . "maragu.dev/gomponents"
-    ghttp "maragu.dev/gomponents/http"
+
+    . "alan.ovh/gomponents"
+    ghttp "alan.ovh/gomponents/http"
 )
 
 type HTTPError struct {
@@ -274,9 +274,9 @@ func Handler(w http.ResponseWriter, r *http.Request) (Node, error) {
 Build complex UIs from simple, reusable components:
 ```go
 import (
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/components"
-    . "maragu.dev/gomponents/html"
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/components"
+    . "alan.ovh/gomponents/html"
 )
 
 func Layout(title string, content Node) Node {
@@ -295,8 +295,8 @@ func Layout(title string, content Node) Node {
 Leverage Go's type system for compile-time guarantees:
 ```go
 import (
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/html"
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/html"
 )
 
 type ButtonVariant string
@@ -335,10 +335,10 @@ import (
 
 func TestButton(t *testing.T) {
     btn := Button("Click me")
-    
+
     var buf bytes.Buffer
     btn.Render(&buf)
-    
+
     expected := `<button>Click me</button>`
     if buf.String() != expected {
         t.Errorf("got %q, want %q", buf.String(), expected)
@@ -351,18 +351,18 @@ func TestButton(t *testing.T) {
 ### Forms
 ```go
 import (
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/html"
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/html"
 )
 
 func LoginForm() Node {
     return Form(Method("post"), Action("/login"),
         Label(For("email"), Text("Email:")),
         Input(Type("email"), ID("email"), Name("email"), Required()),
-        
+
         Label(For("password"), Text("Password:")),
         Input(Type("password"), ID("password"), Name("password"), Required()),
-        
+
         Button(Type("submit"), Text("Login")),
     )
 }
@@ -371,8 +371,8 @@ func LoginForm() Node {
 ### Tables
 ```go
 import (
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/html"
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/html"
 )
 
 func DataTable(headers []string, rows [][]string) Node {
@@ -396,8 +396,8 @@ func DataTable(headers []string, rows [][]string) Node {
 ### Lists
 ```go
 import (
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/html"
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/html"
 )
 
 func NavMenu(items []MenuItem) Node {
@@ -419,8 +419,8 @@ func NavMenu(items []MenuItem) Node {
 Works seamlessly with Tailwind, Bootstrap, etc.:
 ```go
 import (
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/html"
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/html"
 )
 
 // Tailwind CSS
@@ -439,8 +439,8 @@ Div(Class("container-fluid"),
 Include scripts and handle interactions:
 ```go
 import (
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/html"
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/html"
 )
 
 Button(
@@ -460,11 +460,11 @@ Script(Raw(`
 For web components or non-standard elements:
 ```go
 import (
-    . "maragu.dev/gomponents"
+    . "alan.ovh/gomponents"
 )
 
 // <my-component attr="value">Content</my-component>
-El("my-component", 
+El("my-component",
     Attr("attr", "value"),
     Text("Content"),
 )
@@ -477,9 +477,9 @@ All nodes implement String() for debugging:
 ```go
 import (
     "fmt"
-    
-    . "maragu.dev/gomponents"
-    . "maragu.dev/gomponents/html"
+
+    . "alan.ovh/gomponents"
+    . "alan.ovh/gomponents/html"
 )
 
 node := Div(Class("test"), Text("Hello"))
