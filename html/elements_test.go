@@ -171,10 +171,10 @@ func TestSimpleVoidKindElements(t *testing.T) {
 func BenchmarkLargeHTMLDocument(b *testing.B) {
 	var sb strings.Builder
 
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		elements := make([]g.Node, 0, 10000)
 
-		for i := 0; i < 5000; i++ {
+		for range 5000 {
 			elements = append(elements,
 				Div(Class("foo")),
 				Span(Class("bar")),
