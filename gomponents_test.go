@@ -376,7 +376,10 @@ func TestMapIter2(t *testing.T) {
 		e := g.El("ul", g.MapIter2(items, func(key string, value string) g.Node {
 			return g.El("li", g.Textf("%v: %v", key, value))
 		}))
-		assert.Equal(t, `<ul><li>party: hat</li><li>super: hat</li></ul>`, e)
+		assert.OneOf(t, []string{
+			"<ul><li>party: hat</li><li>super: hat</li></ul>",
+			"<ul><li>super: hat</li><li>party: hat</li></ul>",
+		}, e)
 	})
 }
 
