@@ -20,6 +20,10 @@ func Checked() g.Node {
 	return g.Attr("checked")
 }
 
+func ClosedBy(v string) g.Node {
+	return g.Attr("closedby", v)
+}
+
 func Controls() g.Node {
 	return g.Attr("controls")
 }

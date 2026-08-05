@@ -53,6 +53,7 @@ func TestSimpleAttributes(t *testing.T) {
 		{Name: "charset", Func: Charset},
 		{Name: "cite", Func: CiteAttr},
 		{Name: "class", Func: Class},
+		{Name: "closedby", Func: ClosedBy},
 		{Name: "cols", Func: Cols},
 		{Name: "colspan", Func: ColSpan},
 		{Name: "content", Func: Content},
